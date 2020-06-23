@@ -4,13 +4,14 @@ services:
   node:
     build: .
     ports:
+     - 3000:3000
      - "3022:22"
     links:
       - mongo
     networks:
       - mongo-compose-network
     volumes:
-      - ./work/root:/root
+      - ./work/git:/git
 #      - ./work/node_modules:/usr/lib/node_modules/
     
   mongo-express:
