@@ -2,10 +2,10 @@ ARG VERSION_ALPINE=3.7
 FROM alpine:$VERSION_ALPINE
 
 ARG VERSION_NODEJS=8.9.3-r1
-RUN apk --update add git less openssh nodejs=$VERSION_NODEJS && \
+RUN apk --update add git less openssh nodejs=$VERSION_NODEJS bash musl libgcc libstdc++  && \
     rm -rf /var/lib/apt/lists/* && \
     rm /var/cache/apk/*
-
+RUN /usr/bin/ssh-keygen -A
 COPY sshd_config /etc/ssh/sshd_config
 # RUN /bin/sh /etc/init.d/ssh restart
 # RUN rc-update add sshd
@@ -25,6 +25,6 @@ RUN echo 'root:123' | chpasswd
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
-RUN /usr/bin/ssh-keygen -A
+
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
