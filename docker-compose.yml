@@ -2,7 +2,7 @@ version: '3'
 
 services:
   node:
-    build: .
+    build: ./node
     ports:
      - 3000:3000
      - "3022:22"
@@ -43,8 +43,8 @@ services:
       - mongo-compose-network
     ports:
       - "8080:8080"
-    volumes:
-      - restheart.yml:/opt/restheart/etc/restheart.yml
+#    volumes:
+#      - restheart.yml:/opt/restheart/etc/restheart.yml
 
   mongo:
     image: mongo
