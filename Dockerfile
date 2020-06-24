@@ -48,4 +48,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 EXPOSE 22
 EXPOSE 3000
 
+VOLUME /root/.ssh
+VOLUME /root/.git
+
 CMD ["/usr/sbin/sshd", "-D"]

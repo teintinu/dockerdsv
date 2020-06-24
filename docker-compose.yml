@@ -12,6 +12,8 @@ services:
       - mongo-compose-network
     volumes:
       - ./work/git:/git
+      - ./work/.ssh:/root/.ssh
+      - ./work/.git:/root/.git
 #      - ./work/node_modules:/usr/lib/node_modules/
     
   mongo-express:
@@ -29,6 +31,21 @@ services:
     networks:
       - mongo-compose-network
 
+  restheart:
+    image: softinstigate/restheart:5.1.1
+    container_name: restheart
+    environment:
+      MONGO_URI: mongodb://root:MongoDB2020!@mongo
+    command: ["--envFile", "/opt/restheart/etc/default.properties"]
+    depends_on:
+      - mongo
+    networks:
+      - mongo-compose-network
+    ports:
+      - "8080:8080"
+    volumes:
+      - restheart.yml:/opt/restheart/etc/restheart.yml
+
   mongo:
     image: mongo
     environment:
@@ -40,6 +57,10 @@ services:
       - ./work/mongodata:/data/db
     networks:
       - mongo-compose-network
+    command: mongod --replSet rs1 --port 27017  --oplogSize 16 
+    restart: always
+
+
 
 networks: 
     mongo-compose-network:
