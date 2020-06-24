@@ -32,19 +32,19 @@ services:
       - mongo-compose-network
 
   restheart:
-    image: softinstigate/restheart:5.1.1
+    build: ./restheart
     container_name: restheart
     environment:
       MONGO_URI: mongodb://root:MongoDB2020!@mongo
-    command: ["--envFile", "/opt/restheart/etc/default.properties"]
+#    command: ["--envFile", "/opt/restheart/etc/default.properties"]
     depends_on:
       - mongo
     networks:
       - mongo-compose-network
     ports:
       - "8080:8080"
-#    volumes:
-#      - restheart.yml:/opt/restheart/etc/restheart.yml
+    volumes:
+      - ./restheart/etc:/opt/restheart/etc
 
   mongo:
     image: mongo
@@ -59,8 +59,6 @@ services:
       - mongo-compose-network
     command: mongod --replSet rs1 --port 27017  --oplogSize 16 
     restart: always
-
-
 
 networks: 
     mongo-compose-network:
