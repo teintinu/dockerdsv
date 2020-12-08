@@ -1,10 +1,12 @@
 version: '3'
 
 services:
-  node:
+  dev:
     build: ./node
     ports:
+     - 1234:1234
      - 3000:3000
+     - 8085:8085
      - "3022:22"
     links:
       - mongo
@@ -12,10 +14,17 @@ services:
       - mongo-compose-network
     volumes:
       - ./work/git:/git
+#      - ./work/.bashrc:/root/.bashrc
+      - ./work/.config:/root/.config
       - ./work/.ssh:/root/.ssh
       - ./work/.git:/root/.git
+      - ./work/.gitconfig:/root/.gitconfig
+      - ./work/.npm:/root/.npm
+      - ./work/.vscode-server/:/root/.vscode-server
+      - ./work/ssl/:/root/ssl
+#      - /etc/letsencrypt/live/cloud.hoda5.com:/root/ssl
 #      - ./work/node_modules:/usr/lib/node_modules/
-    
+         
   mongo-express:
     image: mongo-express
     ports:
@@ -31,21 +40,6 @@ services:
     networks:
       - mongo-compose-network
 
-  restheart:
-    build: ./restheart
-    container_name: restheart
-    environment:
-      MONGO_URI: mongodb://root:MongoDB2020!@mongo
-#    command: ["--envFile", "/opt/restheart/etc/default.properties"]
-    depends_on:
-      - mongo
-    networks:
-      - mongo-compose-network
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./restheart/etc:/opt/restheart/etc
-
   mongo:
     image: mongo
     environment:
@@ -60,6 +54,29 @@ services:
     command: mongod --replSet rs1 --port 27017  --oplogSize 16 
     restart: always
 
+#  appwrite-dsv:
+#    image: appwrite/install
+##    ports:
+##      - "3080:80"
+##      - "3443:443"
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./work/appwrite:/install/appwrite:rw
+#    environment:
+#      _APP_OPTIONS_FORCE_HTTPS: "false"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+#  whatsapp-thr0w:
+#    image: whatsapp-web-reveng
+#    ports:
+#      - "2019:2019"
+#      - "2018:2018"
+
 networks: 
     mongo-compose-network:
       driver: bridge
+

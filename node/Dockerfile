@@ -26,6 +26,7 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN mkdir /var/run/sshd
 RUN /usr/bin/ssh-keygen -A
 COPY sshd_config /etc/ssh/sshd_config
+
 # RUN /bin/sh /etc/init.d/ssh restart
 # RUN rc-update add sshd
 # RUN rc-status
@@ -50,5 +51,9 @@ EXPOSE 3000
 
 VOLUME /root/.ssh
 VOLUME /root/.git
+VOLUME /root/.gitconfig
+VOLUME /root/.config
+VOLUME /root/.vscode-server
+VOLUME /root/ssl
 
 CMD ["/usr/sbin/sshd", "-D"]
