@@ -51,8 +51,16 @@ services:
       - ./work/mongodata:/data/db
     networks:
       - mongo-compose-network
-    command: mongod --replSet rs1 --port 27017  --oplogSize 16 
+    command: mongod --auth --replSet rs1 --port 27017
+#    command: mongod --auth 
     restart: always
+#    healthcheck:
+#      start_period: 1s
+#      test: echo "afsgasfgafgafga1"
+#      interval: 5s
+#      test: ["CMD", '$$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${ME_CONFIG_MONGODB_ADMINUSERNAME} -p $${ME_CONFIG_MONGODB_ADMINPASSWORD"} --quiet) -eq 1']
+#            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+#            interval: 10s
 
 #  appwrite-dsv:
 #    image: appwrite/install
