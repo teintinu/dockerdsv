@@ -11,7 +11,7 @@ services:
     links:
       - mongo
     networks:
-      - mongo-compose-network
+      - my-network
     volumes:
       - ./work/git:/git
 #      - ./work/.bashrc:/root/.bashrc
@@ -38,7 +38,7 @@ services:
     links:
       - mongo
     networks:
-      - mongo-compose-network
+      - my-network
 
   mongo:
     image: mongo
@@ -50,7 +50,7 @@ services:
     volumes:
       - ./work/mongodata:/data/db
     networks:
-      - mongo-compose-network
+      - my-network
     command: mongod --auth --replSet rs1 --port 27017
 #    command: mongod --auth 
     restart: always
@@ -73,10 +73,47 @@ services:
 #    environment:
 #      _APP_OPTIONS_FORCE_HTTPS: "false"
 
-  redis:
+  redis_db:
     image: redis
     ports:
-      - "6379:6379"
+      - "16001:16001"
+    volumes:
+      - ./redis_db.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - my-network
+
+  redis_cache:
+    image: redis
+    ports:
+      - "16002:16002"
+    volumes:
+      - ./redis_cache.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+     - my-network
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+#      - REDIS_HOSTS=redis_db:redis_db:16001:0
+      - REDIS_HOSTS=redis_db:redis_db:16001:0,redis_cache:redis_cache:16002:0
+    ports:
+      - "8082:8081"
+    networks:
+      - my-network
+    links:
+      - redis_db
+#  redismin:
+#    image: redsmin/proxy
+#    environment:  
+#    - REDSMIN_KEY=5fd21c04bbe33f0fd45858f5
+##    - REDIS_URI="redis://localhost:6379" 
+#    networks:
+#      - my-network
 
 #  whatsapp-thr0w:
 #    image: whatsapp-web-reveng
@@ -85,6 +122,6 @@ services:
 #      - "2018:2018"
 
 networks: 
-    mongo-compose-network:
+    my-network:
       driver: bridge
 
