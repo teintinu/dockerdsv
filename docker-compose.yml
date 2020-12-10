@@ -73,12 +73,12 @@ services:
 #    environment:
 #      _APP_OPTIONS_FORCE_HTTPS: "false"
 
-  redis_db:
+  redis_session:
     image: redis
     ports:
       - "16001:16001"
     volumes:
-      - ./redis_db.conf:/usr/local/etc/redis/redis.conf
+      - ./redis_session.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       - my-network
@@ -99,14 +99,14 @@ services:
     image: rediscommander/redis-commander:latest
     restart: always
     environment:
-#      - REDIS_HOSTS=redis_db:redis_db:16001:0
-      - REDIS_HOSTS=redis_db:redis_db:16001:0,redis_cache:redis_cache:16002:0
+      - REDIS_HOSTS=session_dsv:redis_session:16001:0,cache_dsv:redis_cache:16002:0,session_prod:redis_session:16001:1,cache_prod:redis_cache:16002:1
     ports:
       - "8082:8081"
     networks:
       - my-network
     links:
-      - redis_db
+      - redis_session
+      - redis_cache
 #  redismin:
 #    image: redsmin/proxy
 #    environment:  
