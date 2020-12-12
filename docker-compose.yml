@@ -73,6 +73,14 @@ services:
 #    environment:
 #      _APP_OPTIONS_FORCE_HTTPS: "false"
 
+#  aerospike:
+#    image: aerospike/aerospike-server
+#    ports:
+#      - 3000
+#      - 3001
+#      - 3002
+#      - 3003
+
   redis_session:
     image: redis
     ports:
@@ -107,13 +115,13 @@ services:
     links:
       - redis_session
       - redis_cache
-#  redismin:
-#    image: redsmin/proxy
-#    environment:  
-#    - REDSMIN_KEY=5fd21c04bbe33f0fd45858f5
-##    - REDIS_URI="redis://localhost:6379" 
-#    networks:
-#      - my-network
+  redismin:
+    image: redsmin/proxy
+    environment:  
+    - REDSMIN_KEY=5fd21c04bbe33f0fd45858f5
+    - REDIS_URI=redis://redis_session:16001
+    networks:
+      - my-network
 
 #  whatsapp-thr0w:
 #    image: whatsapp-web-reveng
